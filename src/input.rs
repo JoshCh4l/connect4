@@ -7,6 +7,7 @@ pub fn player_input(
     mtx: &mut matrix::Matrix,
     current_player: &mut Player,
     key: event::KeyEvent,
+    font_size: &mut i32,
 ) -> ControlFlow<()> {
     match key.code {
         KeyCode::Char(c @ '1'..='7') => {
@@ -24,6 +25,28 @@ pub fn player_input(
                 }
                 current_player.switch();
             }
+        }
+
+        KeyCode::Char('=') => {
+            *font_size += 2;
+
+            std::process::Command::new("kitty")
+                .args(["@", "set-font-size", &font_size.to_string()])
+                .spawn()
+                .unwrap()
+                .wait()
+                .unwrap();
+        }
+
+        KeyCode::Char('-') => {
+            *font_size -= 2;
+
+            std::process::Command::new("kitty")
+                .args(["@", "set-font-size", &font_size.to_string()])
+                .spawn()
+                .unwrap()
+                .wait()
+                .unwrap();
         }
 
         KeyCode::Esc => {

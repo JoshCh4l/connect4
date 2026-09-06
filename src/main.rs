@@ -17,11 +17,15 @@ fn main() -> io::Result<()> {
     let mut mtx = matrix::Matrix::new();
     let mut current_player = Player::One;
 
+    let mut font_size = 14;
+
     loop {
         mtx.print(&current_player, false);
 
         if let Event::Key(key) = event::read()? {
-            if let ControlFlow::Break(_) = input::player_input(&mut mtx, &mut current_player, key) {
+            if let ControlFlow::Break(_) =
+                input::player_input(&mut mtx, &mut current_player, key, &mut font_size)
+            {
                 break;
             } else {
                 continue;
