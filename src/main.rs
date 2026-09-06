@@ -18,7 +18,7 @@ fn main() -> io::Result<()> {
     let mut current_player = Player::One;
 
     loop {
-        mtx.print(&current_player);
+        mtx.print(&current_player, false);
 
         if let Event::Key(key) = event::read()? {
             if let ControlFlow::Break(_) = input::player_input(&mut mtx, &mut current_player, key) {

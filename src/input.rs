@@ -19,11 +19,7 @@ pub fn player_input(
 
             if placed {
                 if mtx.check_winner(current_player.value()) {
-                    mtx.print(current_player);
-                    println!(
-                        "   Player {} wins ദ്ദി(•̀ᴗ-) ✧  (╯°□°）╯︵ ┻━┻",
-                        current_player.value()
-                    );
+                    mtx.print(current_player, true);
                     return ControlFlow::Break(());
                 }
                 current_player.switch();

@@ -19,12 +19,19 @@ impl Matrix {
         }
     }
 
-    pub fn print(&self, player: &Player) {
+    pub fn print(&self, player: &Player, win: bool) {
+        let (width, height) = terminal::size().unwrap();
         let mut stdout = io::stdout();
+
+        let board_width = 13;
+        let board_height = 10;
+
+        let x = (width - board_width) / 2;
+        let y = (height - board_height) / 2;
 
         execute!(
             stdout,
-            cursor::MoveTo(0, 0),
+            cursor::MoveTo(x - 1, y),
             terminal::Clear(ClearType::All)
         )
         .unwrap();
@@ -33,16 +40,16 @@ impl Matrix {
             Player::One => writeln!(stdout, "Player 1's turn").unwrap(),
             Player::Two => writeln!(stdout, "Player 2's turn").unwrap(),
         }
-        execute!(stdout, cursor::MoveTo(0, 2)).unwrap();
+        execute!(stdout, cursor::MoveTo(x, y + 2)).unwrap();
         writeln!(stdout, "1 2 3 4 5 6 7").unwrap();
 
-        execute!(stdout, cursor::MoveTo(0, 3)).unwrap();
-        writeln!(stdout, "-------------").unwrap();
+        execute!(stdout, cursor::MoveTo(x, y + 3)).unwrap();
+        writeln!(stdout, "+-+-+-+-+-+-+").unwrap();
 
-        for (y, row) in self.matrix.iter().enumerate() {
-            execute!(stdout, cursor::MoveTo(0, y as u16 + 4)).unwrap();
+        for (row, value) in self.matrix.iter().enumerate() {
+            execute!(stdout, cursor::MoveTo(x, y + row as u16 + 4)).unwrap();
 
-            for value in row {
+            for value in value {
                 match value {
                     1 => execute!(stdout, SetForegroundColor(Color::Red)).unwrap(),
                     2 => execute!(stdout, SetForegroundColor(Color::Green)).unwrap(),
@@ -50,6 +57,16 @@ impl Matrix {
                 }
                 write!(stdout, "{value} ").unwrap();
             }
+        }
+
+        if win {
+            execute!(stdout, cursor::MoveTo(x - 14, y + 11)).unwrap();
+            writeln!(
+                stdout,
+                "   Player {} wins ദ്ദി(•̀ᴗ-) ✧  (╯°□°）╯︵ ┻━┻",
+                player.value()
+            )
+            .unwrap();
         }
 
         stdout.flush().unwrap();
